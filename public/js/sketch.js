@@ -12,7 +12,7 @@ function setup() {
   snake = new Snake();
   gameManager = new GameManager();
 
-  // initialize the score display
+  // initialize the score and leveldisplay
   gameManager.showScore();
   gameManager.showLevel();
 

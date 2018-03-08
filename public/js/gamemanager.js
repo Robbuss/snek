@@ -52,6 +52,7 @@ function GameManager() {
         this.score = 0;
         this.updateScore(this.score);
         this.currentLevel = 1;
+        this.updateLevel();
 
         // reset snake position
         snake.x = width / 2;

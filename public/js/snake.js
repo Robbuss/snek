@@ -7,7 +7,7 @@ function Snake() {
     this.xspeed = 0;
     this.yspeed = 1;
     this.total = 0;
-    this.tail = [];
+    this.tail = [1, 1, 1];
 
     // snake can eat something and grow 
     this.eat = function (pos) {
