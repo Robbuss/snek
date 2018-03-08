@@ -1,25 +1,29 @@
 var snake;
-var scl = 15;
+var scl = 10;
 var start = 0;
-
+var gameManager;
 var food;
 
 function setup() {
   // canvas
   background(255, 255, 0);
-  
-  createCanvas(750, 750);
+  createCanvas(500, 500);
+
   snake = new Snake();
-  frameRate(10);
+  gameManager = new GameManager();
+
+  // initialize the score display
+  gameManager.showScore();
+  gameManager.showLevel();
+
+  // set the gamespeed
+  frameRate(gameManager.gameSpeed);
 
   // pick a location for the food
   pickLocation();
 }
 
-function mousePressed() {
-  snake.total++;
-}
-
+// divide screen by cols, otherwise the snake and the food dont line up nicely
 function pickLocation() {
   var cols = floor(width / scl);
   var rows = floor(height / scl);
@@ -28,37 +32,27 @@ function pickLocation() {
   food.mult(scl);
 }
 
-function startScreen() {
-
-  img.loadPixels();
-  image(img, 0, 0, width, height);
-
-  textSize(32);
-  text('Press S to play.', canvas.height / 2, canvas.width / 2);
-  if (keyCode === 83) {
-    background(125);
-    start = true;
-  }
-
-}
-
 function draw() {
-
     background(125);
 
     snake.death();
     snake.update();
     snake.show();
 
+    // if the snake eats the food, update the score and pick a new location for the food
     if(snake.eat(food)){
       pickLocation();
+      gameManager.score += 10;
+      gameManager.updateScore(gameManager.score);
     }
 
+    // draw the food 
     fill(255, 0, 100);
     rect(food.x, food.y, scl, scl);
  
 }
 
+// game controls 
 function keyPressed(){
   if (keyCode === UP_ARROW) {
     snake.dir(0, -1);
