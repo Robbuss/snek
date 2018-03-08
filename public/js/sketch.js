@@ -3,6 +3,8 @@ var scl = 10;
 var start = 0;
 var gameManager;
 var food;
+var socket;
+var moved = 0;
 
 function setup() {
   // canvas
@@ -21,6 +23,8 @@ function setup() {
 
   // pick a location for the food
   pickLocation();
+
+  socket = io.connect('http://localhost:3000');
 }
 
 // divide screen by cols, otherwise the snake and the food dont line up nicely
@@ -33,6 +37,7 @@ function pickLocation() {
 }
 
 function draw() {
+
     background(125);
 
     snake.death();
@@ -49,7 +54,19 @@ function draw() {
     // draw the food 
     fill(255, 0, 100);
     rect(food.x, food.y, scl, scl);
- 
+
+    // emit the snake data to the socket
+    socket.emit('snakeMove', snakeData(moved));
+    console.log(snakeData(moved));
+    moved = 0;
+}
+
+function snakeData(moved){
+  return {
+    "y": snake.y,
+    "x": snake.x,
+    "moved": moved,
+    };
 }
 
 // game controls 
@@ -63,4 +80,5 @@ function keyPressed(){
   } else if (keyCode === DOWN_ARROW) {
     snake.dir(0 , 1);
   }
+  moved = 1;
 }
