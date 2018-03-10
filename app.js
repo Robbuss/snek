@@ -4,7 +4,6 @@ var server = app.listen(3000);
 var socket = require('socket.io');
 var io = socket(server);
 var nn = require(__dirname + '/public/js/nn.js');
-var normalizer = require(__dirname + '/public/js/normalizer.js');
 
 app.use(express.static('public'));
 
@@ -14,24 +13,12 @@ io.on('connection', function(socket){
         console.log('Player disconnected.');
     });
 
-    socket.on('snakeMove', function (snakeData) {
-        if(snakeData){
-            normalizer.Normalizer([snakeData.x, snakeData.y]);
-            normalizer.setOutputProperties(['moved']);
-            normalizer.normalize();
-            // find useful information about your data
-            // to pass to your neural network
-            const nbrInputs = normalizer.getInputLength();
-            const nbrOutputs = normalizer.getOutputLength();
+    socket.on('sendSnakeData', function (snakeData) {
+        snakeData.input = nn.normalizeInputData(snakeData.input); // normalize the data
+        //console.log(snakeData);
 
-            const metadata = normalizer.getDatasetMetaData();
-            const inputs = normalizer.getBinaryInputDataset();
-            const outputs = normalizer.getBinaryOutputDataset();
-
-            console.log(metadata);
-            console.log(inputs);
-            console.log(outputs);
-        }
+        let decision = nn.inputData(snakeData); // send the normalized data to the NN
+        //io.emit('receiveSnakeData', decision); // send the data back to the sketch to make the snake move
 
     });
 

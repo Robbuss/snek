@@ -7,7 +7,6 @@ function GameManager() {
     this.showScore = function() {
         // show the Your score element
         scoreDisplay = createP('Your score: ' + this.score);
-        scoreDisplay.style('color', 'white');
         scoreDisplay.class('score');
         scoreDisplay.position(5, -15); // not sure why we should have to set the Y value to negative, maybe its the default margin
     }
@@ -20,7 +19,6 @@ function GameManager() {
     this.showLevel = function () {
         // show the level element
         levelDisplay = createP('Level: ' + this.currentLevel);
-        levelDisplay.style('color', 'white');
         levelDisplay.class('score');
         levelDisplay.position(width - 100, -15); // not sure why we should have to set the Y value to negative, maybe its the default margin
     }    
@@ -54,13 +52,19 @@ function GameManager() {
         this.currentLevel = 1;
         this.updateLevel();
 
-        // reset snake position
+
+        // reset snake position and speed
         snake.x = width / 2;
-        snake.y = height / 2;
+        snake.y = height / 2; 
+        snake.xspeed = 0;
+        snake.yspeed = 1;
 
         // reset the total count and the snake's tail
-        snake.total = 0;
-        snake.tail = [];
+        snake.total = 2;
+        snake.tail = [createVector(snake.x, snake.y + scl), createVector(snake.x, snake.y + scl + scl)];
+        // snake.total = 2;
+        // snake.tail[0] = createVector(snake.x + scl, snake.y);
+        // snake.tail[1] = createVector(snake.x, snake.y);
     }
 
 }

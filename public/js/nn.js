@@ -6,7 +6,7 @@ var Neuron = synaptic.Neuron,
     Trainer = synaptic.Trainer,
     Architect = synaptic.Architect;
 
-var snakeNet = new Architect.Perceptron(3, 7, 1)
+var snakeNet = new Architect.Perceptron(5, 20, 4)
 var trainer = new Trainer(snakeNet)
 
 var trainingSet = [
@@ -28,16 +28,39 @@ var trainingSet = [
     },
 ]
 
-return module.exports = {
+module.exports = {
+    // normalizes the input data
+    normalizeInputData: function (array) {
+        // max range between -1 and 1 is 2, so speed / 2 +.5 gives ranges from 0 to 1 
+        array.xspeed = (array.xspeed / 2) + 0.5;
+        array.yspeed = (array.yspeed / 2) + 0.5;
+        array.x = array.x / 500; // max value for x and y = 500
+        array.y = array.y / 500;
+        array.distance = array.distance / 710; // the max distance between snake and food = 707
+
+        let input = [array.x, array.y, array.xspeed, array.yspeed, array.distance];
+
+        return input
+    },
+    // Receives an object with input and output arrays
+    trainingsSet: function(snakeData) {
+        console.log(trainer);
+    },
+
+    inputData: function(normalizedData){
+        //console.log(normalizedData);
+    }
     //snakeData: function (snakeCoordinates) {
         // we should normalize the data 
 
         // then train the network
 
-        // let the network decide if the snake should move, and in what direction
-        // we want to receive the snake.x, snake.y, snake.dir
-        // so the outsput are moveLeft[1,0] moveright[0,1], dontmove[0,0]
-        
+        // Outputs (4): 
+        // [0, 0, 0, 0] = dont move
+        // [1, 0, 0 , 0] = moveLeft
+        // [0, 1, 0 , 0] = moveRight
+        // [0, 0, 1 , 0] = moveUp
+        // [0, 0, 0 , 1] = moveDown
         // return the response
         //console.log(snakeNet.activate(snakeCoordinates));
     //}
