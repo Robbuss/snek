@@ -10,7 +10,7 @@ function Snake() {
     this.tail = [createVector(this.x, this.y + scl), createVector(this.x, this.y + scl + scl)];
 
     // snake can eat something and grow 
-    this.eat = function (pos) {
+    this.eat = (pos) => {
         let d = dist(this.x, this.y, pos.x, pos.y);
 
         if (d < 1) {
@@ -22,7 +22,7 @@ function Snake() {
     }
 
     // set the direction of the snake 
-    this.dir = function (x, y) {
+    this.dir = (x, y) => {
         if(Math.abs(this.xspeed - x) != 2){ // prevent dieing from pressing the opposite direction button
             this.xspeed = x;
         } 
@@ -32,7 +32,7 @@ function Snake() {
     }
 
     // Checks if the snake dies, if so reset the gameSpeed and the Score
-    this.death = function () {
+    this.death = () => {
         for (let i = 0; i < this.tail.length; i++) {
             let pos = this.tail[i];
             let d = dist(this.x, this.y, pos.x, pos.y);
@@ -43,7 +43,7 @@ function Snake() {
     }
 
     // update the snake, draw the tail 
-    this.update = function () {
+    this.update = () => {
         for (let i = 0; i < this.tail.length - 1; i++) {
             this.tail[i] = this.tail[i + 1];
         }
@@ -56,7 +56,7 @@ function Snake() {
     }
 
     // show the snake 
-    this.show = function () {
+    this.show = () => {
         stroke(0, 100, 0);
         fill(89, 152, 47);
         for (let i = 0; i < this.total; i++) {

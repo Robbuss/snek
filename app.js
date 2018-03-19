@@ -1,27 +1,46 @@
-var express = require('express');
-var app = express();
-var server = app.listen(3000);
-var socket = require('socket.io');
-var io = socket(server);
-var nn = require(__dirname + '/public/js/nn.js');
+let express = require('express');
+let app = express();
+let server = app.listen(3000);
+let socket = require('socket.io');
+let io = socket(server);
+let nn = require(__dirname + '/public/js/nn.js');
+let fs = require('fs');
 
 app.use(express.static('public'));
 
-io.on('connection', function(socket){
+io.on('connection', (socket) => {
     console.log('Player connected.');
-    socket.on('disconnect', function(){
-        console.log('Player disconnected.');
-    });
+    socket.on('disconnect', () => console.log('Player disconnected.'));
 
-    socket.on('sendSnakeData', function (snakeData) {
+    let array = [];
+    socket.on('generateTrainingsData', (snakeData) => {
         snakeData.input = nn.normalizeInputData(snakeData.input); // normalize the data
-        //console.log(snakeData);
-
-        let decision = nn.inputData(snakeData); // send the normalized data to the NN
-        //io.emit('receiveSnakeData', decision); // send the data back to the sketch to make the snake move
-
+        
+        array.push(JSON.stringify(snakeData));
+        fs.writeFile('trainingsdata.json', '[' + array + ']', 'utf8', (err) => {
+            if (err) {
+                console.log(err);
+            }
+        });
     });
 
+    // read the trainings data, probably make this a separate get request, to train the network 
+    socket.on('trainNetwork', () => {
+        fs.readFile('trainingsdata.json', 'utf8', (err, data) => {
+            if(err){
+                console.log(err);
+            } else{
+                nn.trainNetwork(data);
+            }
+        });
+    });
+
+    // activate the network and generate an ouput array
+    socket.on('activateNetwork', (snakeData) => {
+        let response = nn.activateNetwork(snakeData.input);
+        // send the response back to the client
+        socket.emit('networkResponse', response);
+    });
 });
 
 
