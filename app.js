@@ -15,7 +15,7 @@ io.on('connection', (socket) => {
     let array = [];
     socket.on('generateTrainingsData', (snakeData) => {
         snakeData.input = nn.normalizeInputData(snakeData.input); // normalize the data
-        
+
         array.push(JSON.stringify(snakeData));
         fs.writeFile('trainingsdata.json', '[' + array + ']', 'utf8', (err) => {
             if (err) {
@@ -27,9 +27,9 @@ io.on('connection', (socket) => {
     // read the trainings data, probably make this a separate get request, to train the network 
     socket.on('trainNetwork', () => {
         fs.readFile('trainingsdata.json', 'utf8', (err, data) => {
-            if(err){
+            if (err) {
                 console.log(err);
-            } else{
+            } else {
                 nn.trainNetwork(data);
             }
         });

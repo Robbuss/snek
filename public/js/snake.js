@@ -23,10 +23,10 @@ function Snake() {
 
     // set the direction of the snake 
     this.dir = (x, y) => {
-        if(Math.abs(this.xspeed - x) != 2){ // prevent dieing from pressing the opposite direction button
+        if (Math.abs(this.xspeed - x) != 2) { // prevent dieing from pressing the opposite direction button
             this.xspeed = x;
-        } 
-        if(Math.abs(this.yspeed - y) != 2){
+        }
+        if (Math.abs(this.yspeed - y) != 2) {
             this.yspeed = y;
         }
     }

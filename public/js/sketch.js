@@ -10,7 +10,7 @@ function setup() {
   createCanvas(500, 500);
 
   // load the image for the food 
-  img = loadImage("/images/food.png"); 
+  img = loadImage("/images/food.png");
 
   // new Snake and GameManager objects
   snake = new Snake();
@@ -41,58 +41,58 @@ function pickLocation() {
 
 function draw() {
 
-    background(220, 220, 220);
+  background(220, 220, 220);
 
-    // check if the snake is dead, update and show the snake
-    snake.death();
-    snake.update();
-    snake.show();
+  // check if the snake is dead, update and show the snake
+  snake.death();
+  snake.update();
+  snake.show();
 
-    // if the snake eats the food, update the score and pick a new location for the food
-    if (snake.eat(food)){
-      pickLocation();
-      gameManager.score += 10;
-      gameManager.updateScore(gameManager.score);
+  // if the snake eats the food, update the score and pick a new location for the food
+  if (snake.eat(food)) {
+    pickLocation();
+    gameManager.score += 10;
+    gameManager.updateScore(gameManager.score);
+  }
+
+  // draw an image at the foods location. the -3 and -6 are to offset the image to best cover the location
+  image(img, food.x - 3, food.y - 6);
+
+  // put the snake data in an json
+  let snakeData = {
+    "input": snakeInputData(),
+    "output": snakeOutputData()
+  };
+
+  // send inputData to network
+  //socket.emit('activateNetwork' , snakeData);
+
+  // listen for network response 
+  socket.on('networkResponse', (receivedResponse) => {
+    if (receivedResponse) {
+      // control the snake with the data 
+      nnSnakeControl(receivedResponse);
     }
+  });
 
-    // draw an image at the foods location. the -3 and -6 are to offset the image to best cover the location
-    image(img, food.x - 3, food.y - 6);  
-    
-    // put the snake data in an json
-    let snakeData = {
-      "input": snakeInputData(),
-      "output": snakeOutputData()
-    };
+  // generate trainings data, servers saves it in a json 
+  // TODO: control this via a button in the browser
+  socket.emit('generateTrainingsData', snakeData);
 
-    // send inputData to network
-    //socket.emit('activateNetwork' , snakeData);
-
-    // listen for network response 
-    socket.on('networkResponse', (receivedResponse) => {
-      if (receivedResponse){
-        // control the snake with the data 
-        nnSnakeControl(receivedResponse);
-      }
-    });
-
-    // generate trainings data, servers saves it in a json 
-    // TODO: control this via a button in the browser
-    socket.emit('generateTrainingsData', snakeData);
-
-    // actually train the network 
-    // TODO: control this via a button in the browser
-    //socket.emit('trainNetwork', 'go');
+  // actually train the network 
+  // TODO: control this via a button in the browser
+  //socket.emit('trainNetwork', 'go');
 }
 
 // calculate the distance to the from the snake, with Pythagoras
-function distanceToFood(){
+function distanceToFood() {
   let a2 = (snake.x - food.x) * (snake.x - food.x);
   let b2 = (snake.y - food.y) * (snake.y - food.y);
   return sqrt(a2 + b2);
 }
 
 // the snake's input data, that will be send of the socket paired with the output data
-function snakeInputData(){
+function snakeInputData() {
   let input = {
     "y": snake.y,
     "x": snake.x,
@@ -105,7 +105,7 @@ function snakeInputData(){
 }
 
 // the snake's output data, that will be send to the socket paired with the input data
-function snakeOutputData(){
+function snakeOutputData() {
   // determine direction by x and y speed
   let output = [0, 0, 0, 0];
   // if(snake.xspeed = 1){ // snake going up
@@ -119,26 +119,26 @@ function snakeOutputData(){
 }
 
 // NN snake Control
-function nnSnakeControl(decision){
+function nnSnakeControl(decision) {
   // [1, 0, 0 , 0] = moveLeft
   // [0, 1, 0 , 0] = moveRight
   // [0, 0, 1 , 0] = moveUp
   // [0, 0, 0 , 1] = moveDown
   // [0, 0, 0, 0] = dont move
   let threshold = 0.9;
-  if (decision[0] > threshold){
+  if (decision[0] > threshold) {
     snake.dir(-1, 0); // left
-  } else if (decision[1] > threshold){
+  } else if (decision[1] > threshold) {
     snake.dir(1, 0); // right
   } else if (decision[2] > threshold) {
     snake.dir(0, -1); // up
   } else if (decision[3] > threshold) {
     snake.dir(0, 1); // down
-  }  
+  }
 }
 
 // player game controls 
-function keyPressed(){
+function keyPressed() {
   if (keyCode === UP_ARROW) {
     snake.dir(0, -1);
   } else if (keyCode === RIGHT_ARROW) {
@@ -146,6 +146,6 @@ function keyPressed(){
   } else if (keyCode === LEFT_ARROW) {
     snake.dir(-1, 0);
   } else if (keyCode === DOWN_ARROW) {
-    snake.dir(0 , 1);
+    snake.dir(0, 1);
   }
 }

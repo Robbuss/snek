@@ -15,14 +15,14 @@ function GameManager() {
         scoreDisplay.html('Your score: ' + this.score);
         this.changeGameSpeed(this.score);
     }
-    
+
     this.showLevel = () => {
         // show the level element
         levelDisplay = createP('Level: ' + this.currentLevel);
         levelDisplay.class('score');
         levelDisplay.position(width - 100, -15); // not sure why we should have to set the Y value to negative, maybe its the default margin
-    }    
-    
+    }
+
     this.updateLevel = () => {
         levelDisplay.html('Level: ' + this.currentLevel);
     }
@@ -55,7 +55,7 @@ function GameManager() {
 
         // reset snake position and speed
         snake.x = width / 2;
-        snake.y = height / 2; 
+        snake.y = height / 2;
         snake.xspeed = 0;
         snake.yspeed = 1;
 
